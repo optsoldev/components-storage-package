@@ -1,0 +1,47 @@
+@startuml storage-component
+
+package Optsol.Components.Storage {
+
+    package Blob {
+        interface IBlobStorage{
+            + ContainerName: string
+            + AccessPolicy: PublicAccessType
+            
+            + GetAllAsync(): Task<IEnumerable<Page<BlobItem>>>
+            + UploadAsync(name: string, stream:Stream): Task<Response<BlobContentInfo>>
+            + UploadAsync(name: string, path:string): Task<Response<BlobContentInfo>>
+            + DeleteAsync(name: string): Task
+            + DownloadAsync(name: string): Task<Response<BlobDownloadInfo>>
+            + GetUriAsync(name: string): Task<Uri>
+            + ContainerExistsAsync(): Task<Response<bool>>
+        }
+
+        class BlobStorageBase{
+            + ContainerName: string
+            + AccessPolicy: PublicAccessType
+            <<readonly>>
+            + _logger: ILogger
+            <<readonly>>
+            + _storageSettings : StorageSettings
+
+        }
+
+        IBlobStorage <-- BlobStorageBase
+    }
+
+    package Queue {
+        interface IQueueStorage{
+            + QueueName: string
+            
+            + SendMessageAsync<TData>(message: SendMessageModel<TData>): Task<Response<SendReceipt>>
+            + SendMessageBase64Async<TData>(message: SendMessageModel<TData>): Task<Response<SendReceipt>>
+            + UpdateMessageAsync<TData>(message: UpdateMessageModel<TData>): Task<Response<UpdateReceipt>>
+            + DeleteMessageAsync<TData>(message: DeleteMessageModel): Task<Response>
+            + ReceiveMessageAsync<TData>(queueName: string): Task<Response<QueueMessage[]>>
+            
+        }
+    }
+
+}
+
+@enduml
