@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Optsol.Components.Storage.Extensions;
 using Optsol.Components.Storage.Settings;
-using Optsol.Components.Storage.Test.Utils;
+using Optsol.Components.Storage.Test.Utils.Blob;
 using System;
 using System.IO;
 using System.Threading.Tasks;

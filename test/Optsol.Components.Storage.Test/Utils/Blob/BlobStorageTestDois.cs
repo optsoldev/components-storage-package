@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Optsol.Components.Storage.Blob;
 using Optsol.Components.Storage.Settings;
 
-namespace Optsol.Components.Storage.Test.Utils
+namespace Optsol.Components.Storage.Test.Utils.Blob
 {
     public class BlobStorageTestDois : BlobStorageBase, IBlobStorageTestDois
     {
