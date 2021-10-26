@@ -40,7 +40,21 @@ package Optsol.Components.Storage {
             + ReceiveMessageAsync<TData>(queueName: string): Task<Response<QueueMessage[]>>
             
         }
+
+        class QueueStorageBase{
+            + QueueName: string
+            <<readonly>>
+            + _logger: ILogger
+            <<readonly>>
+            + _storageSettings : StorageSettings
+
+        }
+
+        IQueueStorage <-- QueueStorageBase
+
     }
+
+    
 
 }
 
