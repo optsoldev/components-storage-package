@@ -16,8 +16,13 @@ namespace Optsol.Components.Storage.Queue.Models
 
     public class UpdateMessageModel<TData> : SendMessageModel<TData>
     {
-        public UpdateMessageModel(TData data) : base(data)
+        public string MessageId { get; }
+        public string PopReceipt { get; }
+
+        public UpdateMessageModel(string messageId, string popReceipt, TData data) : base(data)
         {
+            MessageId = messageId;
+            PopReceipt = popReceipt;
         }
     }
 
@@ -30,6 +35,13 @@ namespace Optsol.Components.Storage.Queue.Models
 
     public class DeleteMessageModel
     {
-        public QueueMessage Message { get; set; }
+        public string MessageId { get; }
+        public string PopReceipt { get; }
+
+        public DeleteMessageModel(string messageId, string popReceipt)
+        {
+            MessageId = messageId;
+            PopReceipt = popReceipt;
+        }
     }
 }

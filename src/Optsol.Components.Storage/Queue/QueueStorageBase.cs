@@ -66,19 +66,17 @@ namespace Optsol.Components.Storage.Queue
         {
             await GetQueueClient();
 
-            return await _queueClient.UpdateMessageAsync(message.Message.MessageId, message.Message.PopReceipt, message.Data.ToJson(IgnoredProperties));
+            return await _queueClient.UpdateMessageAsync(message.MessageId, message.PopReceipt, message.Data.ToJson(IgnoredProperties));
         }
 
-        public async Task<Response> DeleteMessageAsync<TData>(DeleteMessageModel message)
-            where TData : class
+        public async Task<Response> DeleteMessageAsync(DeleteMessageModel message)
         {
             await GetQueueClient();
 
-            return await _queueClient.DeleteMessageAsync(message.Message.MessageId, message.Message.PopReceipt);
+            return await _queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
         }
 
-        public async Task<Response<QueueMessage[]>> ReceiveMessageAsync<TData>(string queueName)
-            where TData : class
+        public async Task<Response<QueueMessage[]>> ReceiveMessageAsync()
         {
             await GetQueueClient();
 
