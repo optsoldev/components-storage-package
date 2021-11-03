@@ -8,10 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="anexo.jpg" />
     <None Remove="Settings\appsettings.storage.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Attachments\attachment.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Settings\appsettings.storage.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

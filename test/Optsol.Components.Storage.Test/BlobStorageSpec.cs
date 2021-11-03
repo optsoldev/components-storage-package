@@ -6,6 +6,7 @@ using Optsol.Components.Storage.Settings;
 using Optsol.Components.Storage.Test.Utils.Blob;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -115,8 +116,8 @@ namespace Optsol.Components.Storage.Test
             var blobStorageDois = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
 
             //When
-            Action action = () => blobStorage.UploadAsync($"{Guid.NewGuid()}.jpg", File.OpenRead(@"Anexos/anexo.jpg"));
-            Action actionDois = () => blobStorageDois.UploadAsync($"{Guid.NewGuid()}.jpg", File.OpenRead(@"Anexos/anexo.jpg"));
+            Action action = () => blobStorage.UploadAsync($"{Guid.NewGuid()}.jpg", File.OpenRead(@"Attachments/attachment.jpg"));
+            Action actionDois = () => blobStorageDois.UploadAsync($"{Guid.NewGuid()}.jpg", File.OpenRead(@"Attachments/attachment.jpg"));
 
             //Then
             blobStorage.Should().NotBeNull();
@@ -152,8 +153,8 @@ namespace Optsol.Components.Storage.Test
             var blobStorageDois = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
 
             //When
-            Action action = () => blobStorage.UploadAsync($"{Guid.NewGuid()}.jpg", @"Anexos/anexo.jpg");
-            Action actionDois = () => blobStorageDois.UploadAsync($"{Guid.NewGuid()}.jpg", @"Anexos/anexo.jpg");
+            Action action = () => blobStorage.UploadAsync($"{Guid.NewGuid()}.jpg", @"Attachments/attachment.jpg");
+            Action actionDois = () => blobStorageDois.UploadAsync($"{Guid.NewGuid()}.jpg", @"Attachments/attachment.jpg");
 
             //Then
             blobStorage.Should().NotBeNull();
@@ -189,7 +190,7 @@ namespace Optsol.Components.Storage.Test
             var blobStorageDois = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
 
             var name = $"{Guid.NewGuid()}.jpg";
-            await blobStorage.UploadAsync(name, @"Anexos/anexo.jpg");
+            await blobStorage.UploadAsync(name, @"Attachments/attachment.jpg");
 
             //When
             Action action = () => blobStorage.DeleteAsync(name);
@@ -225,7 +226,7 @@ namespace Optsol.Components.Storage.Test
             var blobStorage = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
 
             var name = $"{Guid.NewGuid()}.jpg";
-            await blobStorage.UploadAsync(name, @"Anexos/anexo.jpg");
+            await blobStorage.UploadAsync(name, @"Attachments/attachment.jpg");
 
             //When
             var arquivoDoBlob = await blobStorage.DownloadAsync(name);
@@ -263,7 +264,7 @@ namespace Optsol.Components.Storage.Test
             var blobStorage = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
 
             var name = $"{Guid.NewGuid()}.jpg";
-            await blobStorage.UploadAsync(name, @"Anexos/anexo.jpg");
+            await blobStorage.UploadAsync(name, @"Attachments/attachment.jpg");
 
             //When
             var arquivoDoBlob = await blobStorage.GetUriAsync(name);
@@ -273,6 +274,44 @@ namespace Optsol.Components.Storage.Test
 
             arquivoDoBlob.Should().NotBeNull();
             arquivoDoBlob.AbsoluteUri.Contains(name).Should().BeTrue();
+        }
+
+
+        [Trait("Table Storage", "Blob")]
+#if DEBUG
+        [Fact(DisplayName = "Deve obter todos os blobs")]
+#elif RELEASE
+        [Fact(DisplayName = "Deve obter todos os blobs", Skip ="Testes realizados localmente")]
+#endif
+        public async Task Deve_Obter_Todos_Blobs()
+        {
+            //Given
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile(@"Settings/appsettings.storage.json")
+                .Build();
+
+            var services = new ServiceCollection();
+
+            services.AddLogging();
+            services.AddStorage(configuration, options =>
+            {
+                options.ConfigureBlob<IBlobStorageTest, BlobStorageTest>("Optsol.Components.Storage.Test.Utils");
+            });
+
+            var provider = services.BuildServiceProvider();
+            var blobStorage = (BlobStorageTestDois)provider.GetRequiredService<IBlobStorageTestDois>();
+
+            var name = $"{Guid.NewGuid()}.jpg";
+            await blobStorage.UploadAsync(name, @"Attachments/attachment.jpg");
+
+            //When
+            var arquivos = await blobStorage.GetAllAsync();
+
+            //Then
+            blobStorage.Should().NotBeNull();
+
+            arquivos.Should().NotBeNull();
+            arquivos.Count().Should().BeGreaterThanOrEqualTo(1);
         }
     }
 }
